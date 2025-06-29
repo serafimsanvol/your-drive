@@ -31,15 +31,12 @@ export class AuthController {
     return { user: req.user };
   }
 
-  @UseGuards(AuthGuard)
   @Post('refresh-token')
-  async refreshToken(
-    @Body() body: { refreshToken: string },
-    @Request() req: { user: JWTPayload },
-  ) {
+  async refreshToken(@Body() body: { refreshToken: string }) {
+    const payload = this.authService.decodeJWT(body.refreshToken);
     return this.authService.refreshJWT({
       refreshToken: body.refreshToken,
-      userId: req.user.userId,
+      userId: payload.userId,
     });
   }
 }

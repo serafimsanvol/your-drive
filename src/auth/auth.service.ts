@@ -22,7 +22,7 @@ export class AuthService {
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload),
-      this.jwtService.signAsync({
+      this.jwtService.signAsync(payload, {
         secret: process.env.JWT_REFRESH_SECRET,
         expiresIn: '30d',
       }),
@@ -72,5 +72,10 @@ export class AuthService {
       password: hashedPassword,
     });
     return this.issueJWT({ userId: user.id });
+  }
+
+  decodeJWT(jwt: string) {
+    const decoded: JWTPayload = this.jwtService.decode(jwt);
+    return decoded;
   }
 }
